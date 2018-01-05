@@ -1,4 +1,4 @@
-*Catalog Item propject*  
+**Catalog Item propject**  
 
 Properties 4 U is an example of the catalog item UDACITY FSND project.
 
