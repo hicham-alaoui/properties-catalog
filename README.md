@@ -18,11 +18,3 @@ You can create an app by visiting http://console.developers.google.com for googl
 - Now you can deploy the app to the local host by typing **python project.py**.  
 
 Open your webbrowser and type **http://localhost:8000/**. 
-
-
-
-
-
-
-
-
