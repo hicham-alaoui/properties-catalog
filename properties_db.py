@@ -23,6 +23,7 @@ class Area(Base):
     name = Column(String(250), nullable=False)
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
+    properties = relationship('Property', cascade='all, delete-orphan')
 
     @property
     def serialize(self):
@@ -35,8 +36,8 @@ class Area(Base):
 
 class Property(Base):
     __tablename__ = 'properties'
-    address = Column(String(300), nullable=False)
     id = Column(Integer, primary_key=True)
+    address = Column(String(400), nullable=False)
     description = Column(String(450))
     city = Column(String(40))
     price = Column(String(16))
