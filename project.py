@@ -24,7 +24,8 @@ from functools import wraps
 
 app = Flask(__name__)
 
-CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
+CLIENT_ID = json.loads(open('client_secrets.json', 'r')
+                       .read())['web']['client_id']
 APPLICATION_NAME = "properties"
 
 engine = create_engine('sqlite:///properties_list.db')
@@ -48,7 +49,8 @@ def login_required(f):
 
 @app.route('/login')
 def gLogin():
-    state = ''.join(random.choice(string.ascii_uppercase + string.digits)for x in xrange(32))
+    state = ''.join(random.choice(string.ascii_uppercase +
+                                  string.digits)for x in xrange(32))
     login_session['state'] = state
     return render_template('login.html', STATE=state)
 
@@ -154,7 +156,8 @@ def gconnect():
 
 # Helper Functions
 def createUser(login_session):
-    newUser = User(name=login_session['username'], email=login_session['email'],
+    newUser = User(name=login_session['username'],
+                   email=login_session['email'],
                    picture=login_session['picture'])
     session.add(newUser)
     session.commit()
@@ -199,7 +202,8 @@ def gdisconnect():
         return response
     else:
 
-        response = make_response(json.dumps('Failed to revoke token for given user.', 400))
+        response = make_response(json.dumps('Failed to revoke token\
+                                             for given user.', 400))
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -259,8 +263,11 @@ def allAreas():
 # Create a new area
 @app.route('/areas/new/', methods=['GET', 'POST'])
 def newArea():
+    if 'username' not in login_session:
+        return redirect('/login')
     if request.method == 'POST':
-        newArea = Area(name=request.form['name'], user_id=login_session['user_id'])
+        newArea = Area(name=request.form['name'],
+                       user_id=login_session['user_id'])
         session.add(newArea)
         flash('New Area %s Successfully Created' % newArea.name)
         session.commit()
@@ -271,6 +278,8 @@ def newArea():
 
 @app.route('/areas/<int:area_id>/edit/', methods=['GET', 'POST'])
 def editArea(area_id):
+    if 'username' not in login_session:
+        return redirect('/login')
     editarea = session.query(Area).filter_by(id=area_id).one()
     if 'username' not in login_session:
         return redirect('/login')
@@ -315,17 +324,25 @@ def allProperties(area_id):
     list = session.query(Property).filter_by(area_id=area_id).all()
 
     if 'username' not in login_session:
-        return render_template('public_properties.html', list=list, area=areas, creator=creator)
+        return render_template('public_properties.html',
+                               list=list, area=areas, creator=creator)
     else:
-        return render_template('properties.html', list=list, area=areas, creator=creator)
+        return render_template('properties.html',
+                               list=list, area=areas, creator=creator)
 
 
 # Add new property
 @app.route('/areas/<int:area_id>/properties/new/', methods=['GET', 'POST'])
 def newProperty(area_id):
+    if 'username' not in login_session:
+        return redirect('/login')
     area = session.query(Area).filter_by(id=area_id).one()
     if request.method == 'POST':
-        new_property = Property(address=request.form['address'], description=request.form['description'], city=request.form['city'], price=request.form['price'], area_id=area_id, user_id=area.user_id)
+        new_property = Property(address=request.form['address'],
+                                description=request.form['description'],
+                                city=request.form['city'],
+                                price=request.form['price'],
+                                area_id=area_id, user_id=area.user_id)
         session.add(new_property)
         session.commit()
         flash("New property created")
@@ -335,8 +352,11 @@ def newProperty(area_id):
 
 
 # Edit property
-@app.route('/areas/<int:area_id>/properties/<int:property_id>/edit', methods=['GET', 'POST'])
+@app.route('/areas/<int:area_id>/properties/<int:property_id>/edit',
+           methods=['GET', 'POST'])
 def editProperty(area_id, property_id):
+    if 'username' not in login_session:
+        return redirect('/login')
     edit_property = session.query(Property).filter_by(id=property_id).one()
     area = session.query(Area).filter_by(id=area_id).one()
     if login_session['user_id'] != area.user_id:
@@ -359,12 +379,17 @@ def editProperty(area_id, property_id):
         flash('Property Details Edited')
         return redirect(url_for('allProperties', area_id=area_id))
     else:
-        return render_template('edit_property.html', area_id=area_id, property_id=property_id, editProperty=edit_property)
+        return render_template('edit_property.html', area_id=area_id,
+                               property_id=property_id,
+                               editProperty=edit_property)
 
 
 # Delete a property
-@app.route('/areas/<int:area_id>/properties/<int:property_id>/delete', methods=['GET', 'POST'])
+@app.route('/areas/<int:area_id>/properties/<int:property_id>/delete',
+           methods=['GET', 'POST'])
 def deleteProperty(area_id, property_id):
+    if 'username' not in login_session:
+        return redirect('/login')
     area = session.query(Area).filter_by(id=area_id).one()
     delete_property = session.query(Property).filter_by(id=property_id).one()
     if login_session['user_id'] != area.user_id:
@@ -378,7 +403,8 @@ def deleteProperty(area_id, property_id):
         flash('Property Successfully Deleted')
         return redirect(url_for('allAreas', area_id=area_id))
     else:
-        return render_template('delete_property.html', delete_property=delete_property)
+        return render_template('delete_property.html',
+                               delete_property=delete_property)
 
 
 if __name__ == '__main__':
