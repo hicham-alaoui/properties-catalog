@@ -10,7 +10,7 @@
 		<form action="#" method = "post">
 				<div class="form-group">
 					<label for="address">Address:</label>
-					<input type ="text" maxlength="450" class="form-control" name="address" value="{{editProperty.name }}">
+					<input type ="text" maxlength="450" class="form-control" name="address" value="{{editProperty.address}}">
 
 					<label for="description">Description:</label>
 					<textarea class="form-control" maxlength="350" rows="3" name="description">{{editProperty.description}}</textarea>
@@ -32,7 +32,7 @@
 					<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Save</button>
 
 					<a href = '{{url_for('allAreas')}}'>
-						<button class="btn btn-default">
+						<button class="btn btn-default" type="button">
 						<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cancel</button>
 					</a>
 				</div>
