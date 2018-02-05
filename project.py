@@ -301,6 +301,8 @@ def editArea(area_id):
 @app.route('/areas/<int:area_id>/delete/', methods=['GET', 'POST'])
 def deleteArea(area_id):
     deleteArea = session.query(Area).filter_by(id=area_id).one()
+    if 'username' not in login_session:
+        return redirect('/login')
     if deleteArea.user_id != login_session['user_id']:
         return "<script>function myFunction() {alert('Sorry! You can only delete the items\
        associated with your id.\ Click on the backward arrow in your browser\
